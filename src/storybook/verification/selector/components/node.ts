@@ -1,6 +1,15 @@
 import { functionOptions } from '@presource/core';
-import { documentNodeAncestors } from '@presource/web';
 import { expect } from 'storybook/test';
+
+// Returns the list of document nodes ancestors
+const documentNodeAncestors = (documentNode: HTMLElement) => {
+    const ancestors: HTMLElement[] = [];
+    while (documentNode) {
+        ancestors.push(documentNode);
+        documentNode = documentNode.parentNode as HTMLElement;
+    }
+    return ancestors;
+};
 
 export const documentNode = (anchor: HTMLElement) => {
     return functionOptions({
