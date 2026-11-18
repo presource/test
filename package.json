@@ -1,7 +1,7 @@
 {
     "name": "@presource/test",
     "version": "1.0.2",
-    "description": "Storybook testing and verification utilities for the Presource ecosystem",
+    "description": "Storybook testing and verification utilities for the presource ecosystem",
     "type": "module",
     "main": "src/index.ts",
     "module": "src/index.ts",
@@ -34,7 +34,6 @@
         "storybook": "^10.0.0"
     },
     "peerDependencies": {
-        "@reloaded/headless": "*",
         "react": "^18.2.0"
     },
     "author": "NQQT",

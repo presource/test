@@ -2,9 +2,9 @@
 
 Storybook testing and verification utility library — fluent assertion DSL for visual testing.
 
-> **Last verified:** 2026-11-18
+> **Last verified:** 2026-11-19
 > **Package name:** `@presource/test`
-> **Workspace dependencies:** `@presource/core`, `@presource/react`, `@presource/web`, `@reloaded/headless`
+> **Workspace dependencies:** `@presource/core`, `@presource/react`, `@presource/web`
 > **Peer dependencies:** `@storybook/react`, `@testing-library/react`, `react`, `storybook`
 
 ---
