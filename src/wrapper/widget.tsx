@@ -1,5 +1,5 @@
 import React from 'react';
-import { propsReactive } from '@presource/react';
+import { propsReactive } from './reactive';
 
 // Local flex-column layout for the wrapper, so this package has no headless UI dependency.
 const flexColumnStyle: React.CSSProperties = {
