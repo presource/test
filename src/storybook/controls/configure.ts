@@ -20,6 +20,17 @@ type ControlList = {
 
 type ConfigureStoryControls = (meta: Meta<any>, controls?: ControlList) => ConfigureStoryControls;
 
+/**
+ * Registers story controls on a Meta: each entry of `controls` is normalised, turned
+ * into a storybook `argType` with a default, merged into `meta.argTypes`, and the
+ * collected defaults are merged into `meta.args`. objectMerge returns a NEW object
+ * and lets the later argument win, so the freshly registered entries overwrite any
+ * existing argType/arg of the same key (nested objects merge instead of replacing).
+ *
+ * The return value is a second-stage function that registers the same way on another
+ * Meta, merging the caller's controls with the argTypes just registered; those sit
+ * last in that merge and therefore win any key collision against the new controls.
+ */
 export const configureStoryControls: ConfigureStoryControls = (meta, controls = {}) => {
     const fullControls = convertToStandardFormat(controls);
     const storybookControls = convertToStorybookFormat(fullControls);
@@ -38,7 +49,9 @@ export const configureStoryControls: ConfigureStoryControls = (meta, controls = 
     };
 };
 
-// This is to convert the control to standard format
+// Normalises every accepted control shape into `{ default, options?, control }`:
+// a primitive becomes its own default with the matching control type, an option list
+// becomes a radio or a select, and a plain object is read as a label -> value map.
 const convertToStandardFormat = (controls: ControlList) => {
     return objectMap(controls, ({ value: option }) => {
         return typeSwitch(option, {
@@ -55,6 +68,8 @@ const convertToStandardFormat = (controls: ControlList) => {
                 control: 'text'
             }),
             array: ({ value }) => {
+                // The first entry doubles as the default; below 5 options every choice
+                // stays visible as a radio, from 5 up they collapse into a select.
                 const initialValue = value[0];
                 if (value.length < 5) {
                     return {
@@ -70,10 +85,13 @@ const convertToStandardFormat = (controls: ControlList) => {
                 };
             },
             function: () => {
-                // TODO. Something to do with function
             },
             default: ({ value }: any) => {
+                // Already-normalised settings (they carry `control`) pass straight through.
                 if (value.control) return value;
+                // Otherwise it is an option map: the keys are what the select shows, the
+                // object is the label -> value mapping handed back to the story, and the
+                // labels map each key to itself.
                 const keyList = Object.keys(value);
                 return {
                     options: keyList,
@@ -90,9 +108,15 @@ const convertToStandardFormat = (controls: ControlList) => {
     };
 };
 
+// Storybook expects `control` to be an object, so a plain string type becomes
+// `{ type }` and an already-shaped object control (the select-with-labels form)
+// replaces it wholesale. Anything else — undefined included — leaves the
+// placeholder `{ type: '' }` in the argType.
 const convertToStorybookFormat = (controls: { [key: string]: ControlSettingFullOptions }) => {
     return objectMap(controls, ({ value }) => {
         const { control } = value;
+        // Copy of the normalised setting with the object-shaped control pre-seeded,
+        // so the string branch only has to fill in `type`.
         const result: any = {
             ...value,
             control: {

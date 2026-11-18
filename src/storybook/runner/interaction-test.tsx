@@ -85,8 +85,9 @@ export const storybookTestRunner = (stories: StoriesModule) => {
             // releases that div through the same deferred `cleanups` array described
             // above — a runner that wants a real teardown has to own the element it
             // unmounts. `run(context)` accepts a Partial<StoryContext> and
-            // `canvasElement` is one of its fields (storybook/dist/csf/index.d.ts:1490),
-            // so injecting it is supported rather than incidental. Nothing downstream
+            // `canvasElement` is one of its fields (storybook/dist/csf/index.d.ts,
+            // StoryContext declares it), so injecting it is supported rather than
+            // incidental. Nothing downstream
             // changes: `$screen` scopes to `playContext.context.canvasElement`
             // (verification/constant/screen.ts) and `$user.click` (userEvent) only
             // requires the element to be attached to the document — both hold because

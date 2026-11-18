@@ -13,9 +13,17 @@ const flexColumnStyle: React.CSSProperties = {
     gap: 2
 };
 
+/**
+ * Wraps a component for a story: the wrapper owns a small reactive state object
+ * (`{ value }`, seeded with `defaultValue`) and passes it to the component as the
+ * `data` prop, printing that state as JSON above the component so a story shows
+ * what the widget currently holds. Writes the component makes through `data`
+ * re-render this wrapper (see ./reactive).
+ */
 export const widgetTestWrapper = (Component: React.FC<any>, defaultValue = '') => {
     return React.memo((props: any) => {
-        // Widget uses standard data input
+        // The wrapper's own state: a reactive `{ value }` object, so any write the
+        // component performs through it (e.g. an input's onChange) triggers a refresh.
         const data = propsReactive({
             value: defaultValue
         });
